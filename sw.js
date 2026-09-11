@@ -1,5 +1,5 @@
-const CACHE_NAME = 'bypos-app-v3';
-const ASSETS = [
+const CACHE_NAME = 'bypos-cache-v4';
+const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
@@ -8,59 +8,90 @@ const ASSETS = [
   './icon-app.png'
 ];
 
-// Install Event
+// 1. Install & pre-cache assets safely
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(async cache => {
+      // Use individual puts so if any one fails, others succeed
+      await Promise.allSettled(
+        STATIC_ASSETS.map(url =>
+          fetch(url)
+            .then(res => {
+              if (res.ok) return cache.put(url, res);
+            })
+            .catch(() => {})
+        )
+      );
+    })
   );
 });
 
-// Activate Event (Delete old caches immediately)
+// 2. Activate & clean up old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
       );
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch Event (Network First for HTML/navigation so updates appear immediately, Cache First for assets/offline)
+// 3. Fast Fetch Handler (Only handles same-origin GET requests)
 self.addEventListener('fetch', event => {
-  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+  const req = event.request;
+
+  // Only handle GET requests
+  if (req.method !== 'GET') return;
+
+  // Skip browser extensions & non-http protocols
+  if (!req.url.startsWith('http')) return;
+
+  // Navigation (Page load) -> Network First with quick Cache Fallback
+  if (req.mode === 'navigate' || req.destination === 'document') {
     event.respondWith(
-      fetch(event.request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseToCache));
-        }
-        return networkResponse;
-      }).catch(() => caches.match('./index.html'))
+      fetch(req)
+        .then(res => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+          }
+          return res;
+        })
+        .catch(async () => {
+          const cached = await caches.match(req);
+          if (cached) return cached;
+          return caches.match('./index.html') || caches.match('./');
+        })
     );
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        // Fetch in background to update cache (stale-while-revalidate)
-        fetch(event.request).then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      return fetch(event.request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseToCache));
+  // Same-origin static assets -> Cache First with Background Update
+  if (req.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(req).then(cachedResponse => {
+        if (cachedResponse) {
+          // Revalidate in background
+          fetch(req)
+            .then(netRes => {
+              if (netRes && netRes.status === 200) {
+                caches.open(CACHE_NAME).then(cache => cache.put(req, netRes));
+              }
+            })
+            .catch(() => {});
+          return cachedResponse;
         }
-        return networkResponse;
-      }).catch(() => caches.match('./index.html'));
-    })
-  );
+
+        return fetch(req).then(netRes => {
+          if (netRes && netRes.status === 200) {
+            const clone = netRes.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+          }
+          return netRes;
+        });
+      })
+    );
+  }
 });
