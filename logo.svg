@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <style>
+      .brand-blue { fill: #007BFF; stroke: #007BFF; }
+      .brand-dark { fill: #232B38; }
+      .brand-white { fill: #FFFFFF; }
+    </style>
+  </defs>
+
+  <g transform="translate(10, 5)">
+    <!-- 1. Top-Left Rounded Card / Receipt -->
+    <rect x="220" y="176" width="135" height="90" rx="20" fill="#007BFF" />
+    
+    <!-- Document Lines inside Card -->
+    <rect x="244" y="198" width="54" height="12" rx="6" fill="#FFFFFF" />
+    <rect x="244" y="222" width="32" height="12" rx="6" fill="#FFFFFF" />
+
+    <!-- 2. Bottom-Right Curved Base Loop (D-Shape) -->
+    <path d="M 280 298 H 334 C 362 298 376 276 376 248 C 376 220 360 204 342 198" 
+          fill="none" 
+          stroke="#007BFF" 
+          stroke-width="26" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+
+    <!-- 3. Vibrant Upward Checkmark Arrow (✓ + ↗) -->
+    <path d="M 185 245 
+             L 242 302 
+             C 248 308 258 308 264 302 
+             L 346 195 
+             L 326 182 
+             L 404 150 
+             L 388 236 
+             L 368 222 
+             L 268 348 
+             C 254 366 228 366 214 348 
+             L 162 294 
+             C 152 284 152 270 162 260 
+             L 172 250 
+             C 176 246 181 245 185 245 Z" 
+          fill="#007BFF" />
+  </g>
+
+  <!-- 4. byPOS Wordmark Typography -->
+  <g font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="94" font-weight="900" letter-spacing="-2.5">
+    <text x="145" y="445" fill="#232B38">by</text>
+    <text x="258" y="445" fill="#007BFF">POS</text>
+  </g>
+</svg>

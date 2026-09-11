@@ -1,0 +1,23 @@
+{
+  "name": "byPOS - Aplikasi Kasir Pintar UMKM",
+  "short_name": "byPOS",
+  "description": "byPOS - Aplikasi Kasir Modern, Cepat, Fleksibel, dan Offline untuk UMKM Indonesia",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F0F4FD",
+  "theme_color": "#007BFF",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-app.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

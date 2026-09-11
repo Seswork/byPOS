@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="115" fill="#FFFFFF" />
+  
+  <g transform="translate(18, 12) scale(0.93)">
+    <!-- 1. Top-Left Rounded Card / Receipt -->
+    <rect x="175" y="145" width="145" height="96" rx="20" fill="#007BFF" />
+    
+    <!-- Document Lines inside Card -->
+    <rect x="200" y="170" width="58" height="13" rx="6.5" fill="#FFFFFF" />
+    <rect x="200" y="195" width="35" height="13" rx="6.5" fill="#FFFFFF" />
+
+    <!-- 2. Bottom-Right Curved Base Loop (D-Shape) -->
+    <path d="M 235 276 H 295 C 328 276 345 250 345 220 C 345 190 326 172 305 166" 
+          fill="none" 
+          stroke="#007BFF" 
+          stroke-width="28" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+
+    <!-- 3. Vibrant Upward Checkmark Arrow (✓ + ↗) -->
+    <path d="M 136 218 
+             L 198 280 
+             C 205 287 217 287 224 280 
+             L 310 165 
+             L 290 150 
+             L 374 116 
+             L 356 208 
+             L 334 194 
+             L 228 330 
+             C 212 350 184 350 168 330 
+             L 112 272 
+             C 100 260 100 245 112 234 
+             L 122 224 
+             C 126 220 132 218 136 218 Z" 
+          fill="#007BFF" />
+  </g>
+</svg>
