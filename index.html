@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>byPOS - Aplikasi Kasir Pintar UMKM</title>
   
   <!-- PWA Meta Tags -->
@@ -1969,37 +1969,56 @@
       color: white;
     }
 
-    /* 2. SHARED PORTRAIT RULES (MEDIA QUERY OR FORCE-PORTRAIT) */
+    /* 2. SHARED PORTRAIT & MOBILE RULES (IPHONE / SMARTPHONE / TABLET PORTRAIT) */
     @media (orientation: portrait), (max-width: 899px) {
-      body:not(.force-landscape) {
-        padding: 0;
-        background: var(--bg-app);
+      html, body, body.force-portrait, body.force-landscape {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: var(--bg-app) !important;
+        display: block !important;
+        overflow-x: hidden !important;
       }
 
-      body:not(.force-landscape) .app-frame {
-        height: 100vh;
-        height: 100dvh;
-        border-radius: 0;
-        box-shadow: none;
-        flex-direction: column;
+      .orientation-floating-btn {
+        display: none !important;
       }
 
-      body:not(.force-landscape) .mobile-top-bar {
-        display: flex;
+      .app-frame, body.force-portrait .app-frame, body.force-landscape .app-frame {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-height: 100% !important;
+        max-height: 100% !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        flex-direction: column !important;
+        display: flex !important;
       }
 
-      body:not(.force-landscape) .nav-sidebar {
-        width: 100%;
-        height: 64px;
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 6px 8px;
-        background: #FFFFFF;
-        border-top: 1px solid var(--border-subtle);
-        border-right: none;
-        box-shadow: 0 -4px 16px rgba(0,0,0,0.05);
-        order: 3;
-        z-index: 25;
+      .mobile-top-bar, body.force-portrait .mobile-top-bar {
+        display: flex !important;
+        padding-top: env(safe-area-inset-top, 0px);
+        height: calc(42px + env(safe-area-inset-top, 0px));
+      }
+
+      .nav-sidebar, body.force-portrait .nav-sidebar {
+        width: 100% !important;
+        height: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+        padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)) !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        background: #FFFFFF !important;
+        border-top: 1px solid var(--border-subtle) !important;
+        border-right: none !important;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.05) !important;
+        order: 3 !important;
+        z-index: 25 !important;
       }
 
       body:not(.force-landscape) .brand-logo-btn,
@@ -2288,29 +2307,31 @@
       }
     }
 
-    /* 3. MANUAL FORCE PORTRAIT (DESKTOP / WIDESCREEN SIMULATION) */
-    body.force-portrait {
-      padding: 16px;
-      background: #0B132B;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      min-height: 100dvh;
-    }
+    /* 3. MANUAL FORCE PORTRAIT (DESKTOP / WIDESCREEN SIMULATION ONLY) */
+    @media (min-width: 900px) {
+      body.force-portrait {
+        padding: 16px;
+        background: #0B132B;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
 
-    body.force-portrait .app-frame {
-      width: 100%;
-      max-width: 420px;
-      height: 90vh;
-      height: 90dvh;
-      min-height: 670px;
-      max-height: 880px;
-      border-radius: 38px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 0 12px #1E2532;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
+      body.force-portrait .app-frame {
+        width: 100%;
+        max-width: 420px;
+        height: 90vh;
+        height: 90dvh;
+        min-height: 670px;
+        max-height: 880px;
+        border-radius: 38px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 0 12px #1E2532;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
     }
 
     body.force-portrait .mobile-top-bar {
@@ -2576,12 +2597,6 @@
   </style>
 <body>
 
-  <!-- FLOATING ORIENTATION SWITCHER BUTTON -->
-  <button class="orientation-floating-btn" id="orientation-toggle-btn" onclick="toggleAppOrientation()" title="Ubah Tampilan Layar (Landscape / Portrait)">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-    <span id="orientation-toggle-text">Mode: Landscape</span>
-  </button>
-
   <div class="app-frame">
     <!-- TOP MOBILE STATUS & BRAND BAR (Visible in Portrait Mode) -->
     <header class="mobile-top-bar">
@@ -2592,10 +2607,6 @@
       </div>
       <div class="mobile-top-right">
         <span id="mobile-live-clock">00:00</span>
-        <button class="mobile-orient-btn" onclick="toggleAppOrientation()" title="Ubah ke Mode Landscape (Tablet / PC)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-          <span>Landscape</span>
-        </button>
       </div>
     </header>
 
@@ -3726,22 +3737,12 @@
       currentOrientation = mode;
       localStorage.setItem(STORAGE_KEY_ORIENTATION, mode);
 
-      const text = document.getElementById('orientation-toggle-text');
-      const btn = document.getElementById('orientation-toggle-btn');
-      const mobBtn = document.querySelector('.mobile-orient-btn span');
-
       if (mode === 'portrait') {
         document.body.classList.remove('force-landscape');
         document.body.classList.add('force-portrait');
-        if (text) text.innerText = 'Mode: Portrait (HP)';
-        if (btn) btn.setAttribute('title', 'Klik untuk beralih ke Mode Landscape (Tablet / PC)');
-        if (mobBtn) mobBtn.innerText = 'Landscape';
       } else {
         document.body.classList.remove('force-portrait');
         document.body.classList.add('force-landscape');
-        if (text) text.innerText = 'Mode: Landscape (PC/Tablet)';
-        if (btn) btn.setAttribute('title', 'Klik untuk beralih ke Mode Portrait (HP)');
-        if (mobBtn) mobBtn.innerText = 'Portrait';
       }
 
       updatePortraitBottomBar();
@@ -5301,10 +5302,19 @@
     }
 
     // ================= PROFIL TOKO =================
+    function applyStoreProfile() {
+      const storeName = (storeProfile && storeProfile.name && storeProfile.name.trim()) ? storeProfile.name.trim() : 'Toko byPOS Serbaguna';
+      const mobStore = document.getElementById('mobile-store-name');
+      if (mobStore) {
+        mobStore.innerText = storeName;
+      }
+      document.title = `${storeName} - byPOS Kasir Pintar`;
+    }
+
     function saveStoreProfile(e) {
       e.preventDefault();
       storeProfile = {
-        name: document.getElementById('cfg-store-name').value.trim(),
+        name: document.getElementById('cfg-store-name').value.trim() || 'Toko byPOS Serbaguna',
         tagline: document.getElementById('cfg-store-tagline').value.trim(),
         address: document.getElementById('cfg-store-address').value.trim(),
         phone: document.getElementById('cfg-store-phone').value.trim(),
@@ -5314,6 +5324,7 @@
       };
       localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(storeProfile));
       renderOrderTypeTabs();
+      applyStoreProfile();
       showToast('Profil Toko & Pengaturan Struk berhasil disimpan!');
     }
 
@@ -5325,8 +5336,7 @@
       document.getElementById('cfg-store-footer').value = storeProfile.footer || '';
       document.getElementById('cfg-store-order-types').value = storeProfile.orderTypes || 'Langsung (Walk-In), Online / WA, Delivery, Ambil Sendiri';
       document.getElementById('cfg-store-papersize').value = storeProfile.paperSize || '58mm';
-      const mobStore = document.getElementById('mobile-store-name');
-      if (mobStore) mobStore.innerText = storeProfile.name || 'byPOS';
+      applyStoreProfile();
     }
 
     function updateMobileClock() {
