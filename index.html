@@ -5496,20 +5496,29 @@
       showToast('🗑️ Riwayat transaksi & restock berhasil dihapus!');
     }
 
-    // 5. Reset Total ke Pengaturan Awal Pabrik
+    // 5. Reset Total ke Pengaturan Awal Pabrik (Clean Slate / Kosongkan Semua Data)
     function resetAllDataFactory() {
-      const promptInput = prompt('⚠️ PERINGATAN: Seluruh produk, kategori, riwayat transaksi, dan profil toko akan dikembalikan ke setelan awal bawaan pabrik.\n\nKetik "RESET" (huruf besar) untuk melanjutkan:');
+      const promptInput = prompt('⚠️ PERINGATAN RESET PABRIK:\n\nSemua produk master, kategori, transaksi, dan histori penjualan akan DIKOSONGKAN TOTAL (0 Data) agar toko dapat disetting ulang dari awal.\n\nKetik "RESET" (huruf besar) untuk melanjutkan:');
       if (promptInput !== 'RESET') {
         if (promptInput !== null) alert('Reset dibatalkan (kata konfirmasi tidak sesuai).');
         return;
       }
 
-      categories = [...DEFAULT_CATEGORIES];
-      paymentMethods = [...DEFAULT_PAYMENT_METHODS];
-      products = [...DEFAULT_PRODUCTS];
-      storeProfile = { ...DEFAULT_STORE };
-      transactions = [];
-      restockHistory = [];
+      // Bersihkan semua data master menjadi 0 / data awal bersih
+      categories = [{ id: 'cat-1', name: 'Umum', desc: 'Kategori Default' }];
+      paymentMethods = [{ id: 'pm-1', name: 'Tunai (Cash)', type: 'Tunai', account: 'Uang Tunai Kasir', active: true }];
+      products = []; // 0 Produk Master
+      storeProfile = {
+        name: 'Toko Saya',
+        tagline: 'Cepat, Praktis, & Efisien',
+        address: '',
+        phone: '',
+        footer: 'Terima kasih atas kunjungannya!',
+        orderTypes: 'Langsung (Walk-In), Online / WA, Delivery',
+        paperSize: '58mm'
+      };
+      transactions = []; // 0 Transaksi
+      restockHistory = []; // 0 Restock
       cart = [];
       discountType = 'percent';
       discountValue = 0;
@@ -5537,7 +5546,7 @@
       updateBackupStats();
 
       closeModal('modal-backup');
-      showToast('⚠️ Seluruh data telah direset ke setelan awal pabrik!');
+      showToast('🧹 Semua data telah dikosongkan (0 Produk & 0 Transaksi)! Siap disetting ulang.');
     }
 
     function updateMobileClock() {
